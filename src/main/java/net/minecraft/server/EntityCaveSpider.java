@@ -7,13 +7,13 @@ public class EntityCaveSpider extends EntitySpider {
         this.a(0.7F, 0.5F);
     }
 
-    protected void aD() {
+    protected void aC() {
         super.aD();
         this.getAttributeInstance(GenericAttributes.a).setValue(12.0D);
     }
 
-    public boolean m(Entity entity) {
-        if (super.m(entity)) {
+    public boolean n(Entity entity) {
+        if (super.n(entity)) {
             if (entity instanceof EntityLiving) {
                 byte b0 = 0;
 
@@ -24,7 +24,8 @@ public class EntityCaveSpider extends EntitySpider {
                 }
 
                 if (b0 > 0) {
-                    ((EntityLiving) entity).addEffect(new MobEffect(MobEffectList.POISON.id, b0 * 20, 0));
+                    // CraftBukkit - Added 'EntityPotionEffectChangeEvent.Cause.MOB'
+                    ((EntityLiving) entity).addEffect(new MobEffect(MobEffectList.POISON.id, b0 * 20, 0), org.bukkit.event.entity.EntityPotionEffectChangeEvent.Cause.MOB);
                 }
             }
 

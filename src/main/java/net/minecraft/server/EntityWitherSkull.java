@@ -53,7 +53,8 @@ public class EntityWitherSkull extends EntityFireball {
                     }
 
                     if (b0 > 0) {
-                        ((EntityLiving) movingobjectposition.entity).addEffect(new MobEffect(MobEffectList.WITHER.id, 20 * b0, 1));
+                        // CraftBukkit - Added 'EntityPotionEffectChangeEvent.Cause.MOB'
+                        ((EntityLiving) movingobjectposition.entity).addEffect(new MobEffect(MobEffectList.WITHER.id, 20 * b0, 1), org.bukkit.event.entity.EntityPotionEffectChangeEvent.Cause.MOB);
                     }
                 }
             }

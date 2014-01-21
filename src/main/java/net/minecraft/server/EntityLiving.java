@@ -10,7 +10,9 @@ import java.util.UUID;
 // CraftBukkit start
 import org.bukkit.craftbukkit.event.CraftEventFactory;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityPotionEffectChangeEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.potion.PotionEffect;
 // CraftBukkit end
 
 public abstract class EntityLiving extends Entity {
@@ -443,6 +445,8 @@ public abstract class EntityLiving extends Entity {
             if (!mobeffect.tick(this)) {
                 if (!this.world.isStatic) {
                     iterator.remove();
+                    // CraftBukkit
+                    CraftEventFactory.callEntityPotionEffectChangeEvent(this, mobeffect, EntityPotionEffectChangeEvent.Cause.EXPIRED, world, locX, locY, locZ);
                     this.b(mobeffect);
                 }
             } else if (mobeffect.getDuration() % 600 == 0) {
@@ -504,6 +508,8 @@ public abstract class EntityLiving extends Entity {
 
             if (!this.world.isStatic) {
                 iterator.remove();
+                // CraftBukkit
+                CraftEventFactory.callEntityPotionEffectChangeEvent(this, mobeffect, EntityPotionEffectChangeEvent.Cause.TREATED, world, locX, locY, locZ);
                 this.b(mobeffect);
             }
         }
@@ -528,6 +534,29 @@ public abstract class EntityLiving extends Entity {
     }
 
     public void addEffect(MobEffect mobeffect) {
+        this.addEffect(mobeffect, EntityPotionEffectChangeEvent.Cause.PLUGIN_ADDED); // CraftBukkit - Only plugins are calling this
+        /* CraftBukkit start - add mob effect below, not here
+        if (this.d(mobeffect)) {
+            if (this.effects.containsKey(Integer.valueOf(mobeffect.getEffectId()))) {
+                ((MobEffect) this.effects.get(Integer.valueOf(mobeffect.getEffectId()))).a(mobeffect);
+                this.a((MobEffect) this.effects.get(Integer.valueOf(mobeffect.getEffectId())), true);
+            } else {
+                this.effects.put(Integer.valueOf(mobeffect.getEffectId()), mobeffect);
+                this.a(mobeffect);
+            }
+        }
+        // CraftBukkit end */
+    }
+
+    // CraftBukkit start - Added Cause for addEffect()
+    public void addEffect(MobEffect mobeffect, EntityPotionEffectChangeEvent.Cause cause) {
+        EntityPotionEffectChangeEvent event = CraftEventFactory.callEntityPotionEffectChangeEvent(this, mobeffect, cause, this.world, this.locX, this.locY, this.locZ);
+        if (event.isCancelled())
+            return; //
+        PotionEffect bukkitEffect = event.getEffect();
+        // Update the MobEffect to reflect what Plugins do with it
+        mobeffect = new MobEffect(bukkitEffect.getType().getId(),bukkitEffect.getDuration(),bukkitEffect.getAmplifier(),event.isAmbient());
+        // CraftBukkit end - handle how Minecraft normally handles adding Effects
         if (this.d(mobeffect)) {
             if (this.effects.containsKey(Integer.valueOf(mobeffect.getEffectId()))) {
                 ((MobEffect) this.effects.get(Integer.valueOf(mobeffect.getEffectId()))).a(mobeffect);
@@ -556,12 +585,30 @@ public abstract class EntityLiving extends Entity {
     }
 
     public void removeEffect(int i) {
+        this.removeEffect(i, EntityPotionEffectChangeEvent.Cause.PLUGIN_REMOVED); // CraftBukkit - Only Plugins can call this
+        /* CraftBukkit - remove mob effect below, not here
         MobEffect mobeffect = (MobEffect) this.effects.remove(Integer.valueOf(i));
 
         if (mobeffect != null) {
             this.b(mobeffect);
         }
+        // CraftBukkit end */
     }
+
+    // CraftBukkit start - handle remove effect
+    public void removeEffect(int i, EntityPotionEffectChangeEvent.Cause cause) {
+        MobEffect mobeffect = (MobEffect) this.effects.remove(Integer.valueOf(i));
+        org.apache.commons.lang.Validate.notNull(mobeffect);
+        EntityPotionEffectChangeEvent event = CraftEventFactory.callEntityPotionEffectChangeEvent(this, mobeffect, cause, world, locX, locY, locZ);
+        if (event.isCancelled()) {
+            return;
+        }
+        PotionEffect bukkitEffect = event.getEffect();
+        mobeffect = new MobEffect(bukkitEffect.getType().getId(),bukkitEffect.getDuration(),bukkitEffect.getAmplifier(),event.isAmbient());
+        this.b(mobeffect);
+
+    }
+    // CraftBukkit end
 
     protected void a(MobEffect mobeffect) {
         this.updateEffects = true;
