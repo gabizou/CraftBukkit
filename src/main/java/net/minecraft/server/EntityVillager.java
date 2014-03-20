@@ -13,7 +13,7 @@ public class EntityVillager extends EntityAgeable implements IMerchant, NPC {
     private boolean bs;
     Village village;
     private EntityHuman tradingPlayer;
-    private MerchantRecipeList bu;
+    public MerchantRecipeList bu; // CraftBukkit - private -> public
     private int bv;
     private boolean bw;
     private int riches;
@@ -22,6 +22,8 @@ public class EntityVillager extends EntityAgeable implements IMerchant, NPC {
     private float bA;
     private static final Map bB = new HashMap();
     private static final Map bC = new HashMap();
+
+    public boolean hasTradedBefore; // CraftBukkit - store this value for API reasons
 
     public EntityVillager(World world) {
         this(world, 0);
@@ -48,6 +50,7 @@ public class EntityVillager extends EntityAgeable implements IMerchant, NPC {
         this.goalSelector.a(9, new PathfinderGoalInteract(this, EntityVillager.class, 5.0F, 0.02F));
         this.goalSelector.a(9, new PathfinderGoalRandomStroll(this, 0.6D));
         this.goalSelector.a(10, new PathfinderGoalLookAtPlayer(this, EntityInsentient.class, 8.0F));
+        this.hasTradedBefore = false; // CraftBukkit - add this.hasTradedBefore = false;
     }
 
     protected void aD() {
@@ -136,6 +139,7 @@ public class EntityVillager extends EntityAgeable implements IMerchant, NPC {
         if (this.bu != null) {
             nbttagcompound.set("Offers", this.bu.a());
         }
+        this.getBukkitEntity().setExtraData(nbttagcompound); // CraftBukkit
     }
 
     public void a(NBTTagCompound nbttagcompound) {
@@ -147,6 +151,7 @@ public class EntityVillager extends EntityAgeable implements IMerchant, NPC {
 
             this.bu = new MerchantRecipeList(nbttagcompound1);
         }
+        this.getBukkitEntity().readExtraData(nbttagcompound); // CraftBukkit
     }
 
     protected boolean isTypeNotPersistent() {
@@ -232,6 +237,7 @@ public class EntityVillager extends EntityAgeable implements IMerchant, NPC {
 
     public void a_(EntityHuman entityhuman) {
         this.tradingPlayer = entityhuman;
+        this.hasTradedBefore = true; // CraftBukkit
     }
 
     public EntityHuman b() {
@@ -548,4 +554,10 @@ public class EntityVillager extends EntityAgeable implements IMerchant, NPC {
         bC.put(Items.EYE_OF_ENDER, new Tuple(Integer.valueOf(7), Integer.valueOf(11)));
         bC.put(Items.ARROW, new Tuple(Integer.valueOf(-12), Integer.valueOf(-8)));
     }
+    // CraftBukkit start
+    @Override
+    public org.bukkit.craftbukkit.entity.CraftVillager getBukkitEntity() {
+        return (org.bukkit.craftbukkit.entity.CraftVillager) super.getBukkitEntity();
+    }
+    // CraftBukkit end
 }

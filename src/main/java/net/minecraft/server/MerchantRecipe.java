@@ -1,12 +1,18 @@
 package net.minecraft.server;
 
+import org.bukkit.craftbukkit.inventory.CraftMerchantTrade; // CraftBukkit
+
 public class MerchantRecipe {
 
     private ItemStack buyingItem1;
     private ItemStack buyingItem2;
     private ItemStack sellingItem;
-    private int uses;
-    private int maxUses;
+    public int uses; // CraftBukkit private -> public
+    public int maxUses; // CraftBukkit private -> public
+    // CraftBukkit start
+    private CraftMerchantTrade bukkitTrade;
+    public org.bukkit.inventory.MerchantTrade.TradeType type = org.bukkit.inventory.MerchantTrade.TradeType.VANILLA;
+    // CraftBukkit end
 
     public MerchantRecipe(NBTTagCompound nbttagcompound) {
         this.a(nbttagcompound);
@@ -26,6 +32,24 @@ public class MerchantRecipe {
     public MerchantRecipe(ItemStack itemstack, Item item) {
         this(itemstack, new ItemStack(item));
     }
+
+    // CraftBukkit start
+    public CraftMerchantTrade getBukkitTrade() {
+        if (this.bukkitTrade == null) {
+            this.bukkitTrade = CraftMerchantTrade.asCraftMirror(this);
+        }
+        return this.bukkitTrade;
+    }
+
+    public MerchantRecipe cloneTrade() {
+        MerchantRecipe recipe = new MerchantRecipe(this.buyingItem1.cloneItemStack(), this.buyingItem2.cloneItemStack(), this.sellingItem.cloneItemStack());
+        if (maxUses != 7) {
+            recipe.maxUses = this.maxUses;
+        }
+        recipe.type = this.type;
+        return recipe;
+    }
+    // CraftBukkit end
 
     public ItemStack getBuyItem1() {
         return this.buyingItem1;
@@ -83,6 +107,7 @@ public class MerchantRecipe {
         } else {
             this.maxUses = 7;
         }
+        this.getBukkitTrade().readExtraData(nbttagcompound); // CraftBukkit
     }
 
     public NBTTagCompound i() {
@@ -96,6 +121,7 @@ public class MerchantRecipe {
 
         nbttagcompound.setInt("uses", this.uses);
         nbttagcompound.setInt("maxUses", this.maxUses);
+        this.getBukkitTrade().setExtraData(nbttagcompound); // CraftBukkit
         return nbttagcompound;
     }
 }
