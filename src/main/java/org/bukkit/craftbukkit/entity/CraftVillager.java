@@ -102,7 +102,7 @@ public class CraftVillager extends CraftAgeable implements Villager {
 
     @Override
     public boolean removeOffer(MerchantTrade merchantTrade) {
-        if (getHandle() != null) {
+        if (getHandle() != null && getHandle().bu != null && !getHandle().bu.isEmpty()) {
             MerchantRecipeList list = getHandle().bu;
             for (int i = 0; i < list.size(); i++) {
                 MerchantRecipe recipe = (MerchantRecipe) list.get(i);
