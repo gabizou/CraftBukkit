@@ -42,7 +42,7 @@ public class MerchantRecipe {
     }
 
     public MerchantRecipe cloneTrade() {
-        MerchantRecipe recipe = new MerchantRecipe(this.buyingItem1.cloneItemStack(), this.buyingItem2.cloneItemStack(), this.sellingItem.cloneItemStack());
+        MerchantRecipe recipe = new MerchantRecipe(this.buyingItem1.cloneItemStack(), (this.buyingItem2 != null ? this.buyingItem2.cloneItemStack() : null), this.sellingItem.cloneItemStack());
         if (maxUses != 7) {
             recipe.maxUses = this.maxUses;
         }
