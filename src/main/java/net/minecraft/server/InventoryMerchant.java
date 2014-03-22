@@ -3,7 +3,10 @@ package net.minecraft.server;
 // CraftBukkit start
 import java.util.List;
 import org.bukkit.craftbukkit.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.inventory.CraftMerchantTrade;
+
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.event.inventory.MerchantTradeEvent;
 // CraftBukkit end
 
 public class InventoryMerchant implements IInventory {
@@ -40,6 +43,10 @@ public class InventoryMerchant implements IInventory {
 
     public org.bukkit.inventory.InventoryHolder getOwner() {
         return player.getBukkitEntity();
+    }
+
+    public IMerchant getMerchant() {
+        return merchant;
     }
     // CraftBukkit end
 
@@ -161,6 +168,14 @@ public class InventoryMerchant implements IInventory {
             if (merchantrecipelist != null) {
                 MerchantRecipe merchantrecipe = merchantrecipelist.a(itemstack, itemstack1, this.e);
 
+                // CraftBukkit start
+                MerchantTradeEvent event = org.bukkit.craftbukkit.event.CraftEventFactory.callMerchantTradeEvent(merchantrecipe, this.merchant, this.player.activeContainer.getBukkitView());
+                if (event != null) {
+                    MerchantRecipe newRecipe = CraftMerchantTrade.asNMSCopy(event.getTradeOffer());
+                    if (merchantrecipe != newRecipe)
+                        merchantrecipe = newRecipe;
+                }
+                // CraftBukkit end
                 if (merchantrecipe != null && !merchantrecipe.g()) {
                     this.recipe = merchantrecipe;
                     this.setItem(2, merchantrecipe.getBuyItem3().cloneItemStack());

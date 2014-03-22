@@ -18,11 +18,15 @@ import net.minecraft.server.EntityItem;
 import net.minecraft.server.EntityLiving;
 import net.minecraft.server.EntityPlayer;
 import net.minecraft.server.EntityPotion;
+import net.minecraft.server.EntityVillager;
 import net.minecraft.server.Explosion;
 import net.minecraft.server.IInventory;
+import net.minecraft.server.IMerchant;
 import net.minecraft.server.InventoryCrafting;
+import net.minecraft.server.InventoryMerchant;
 import net.minecraft.server.ItemStack;
 import net.minecraft.server.Items;
+import net.minecraft.server.MerchantRecipe;
 import net.minecraft.server.PacketPlayInCloseWindow;
 import net.minecraft.server.PacketPlayOutSetSlot;
 import net.minecraft.server.Slot;
@@ -53,6 +57,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Merchant;
 import org.bukkit.entity.Pig;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
@@ -68,10 +73,13 @@ import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.MerchantTradeCompleteEvent;
+import org.bukkit.event.inventory.MerchantTradeEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.MerchantInventory;
 import org.bukkit.inventory.meta.BookMeta;
 
 public class CraftEventFactory {
@@ -774,5 +782,23 @@ public class CraftEventFactory {
         }
         entityHuman.world.getServer().getPluginManager().callEvent(event);
         return (Cancellable) event;
+    }
+
+    public static MerchantTradeEvent callMerchantTradeEvent(MerchantRecipe recipe, IMerchant merchant, InventoryView view) {
+        if (!(merchant instanceof Entity) || view == null || !(view.getTopInventory() instanceof MerchantInventory))
+            // Do not process the event if the Merchant isn't a properly set up Merchant
+            return null;
+        MerchantTradeEvent event = new MerchantTradeEvent(((EntityVillager) merchant).getBukkitEntity(), recipe.getBukkitTrade(), view);
+        Bukkit.getPluginManager().callEvent(event);
+        return event;
+    }
+
+    public static MerchantTradeCompleteEvent callMerchantTradeCompleteEvent(MerchantRecipe recipe, IMerchant merchant, ItemStack item, InventoryView view) {
+        if (!(merchant instanceof Entity) || view == null || !(view.getTopInventory() instanceof MerchantInventory) || item == null)
+            // Do not process the event if the Merchant isn't a properly set up Merchant
+            return null;
+        MerchantTradeCompleteEvent event = new MerchantTradeCompleteEvent(((EntityVillager) merchant).getBukkitEntity(), recipe.getBukkitTrade(), CraftItemStack.asCraftMirror(item), view);
+        Bukkit.getPluginManager().callEvent(event);
+        return event;
     }
 }

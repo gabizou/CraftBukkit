@@ -95,8 +95,9 @@ public class CraftVillager extends CraftAgeable implements Villager {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void addOffer(MerchantTrade merchantTrade) {
-        getHandle().a(CraftMerchantTrade.asNMSCopy(merchantTrade));
+        getHandle().bu.add(CraftMerchantTrade.asNMSCopy(merchantTrade));
 
     }
 
