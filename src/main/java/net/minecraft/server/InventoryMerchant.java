@@ -171,9 +171,7 @@ public class InventoryMerchant implements IInventory {
                 // CraftBukkit start
                 MerchantTradeEvent event = org.bukkit.craftbukkit.event.CraftEventFactory.callMerchantTradeEvent(merchantrecipe, this.merchant, this.player.activeContainer.getBukkitView());
                 if (event != null) {
-                    MerchantRecipe newRecipe = CraftMerchantTrade.asNMSCopy(event.getTradeOffer());
-                    if (merchantrecipe != newRecipe)
-                        merchantrecipe = newRecipe;
+                    merchantrecipe = CraftMerchantTrade.asNMSCopy(event.getTradeOffer());
                 }
                 // CraftBukkit end
                 if (merchantrecipe != null && !merchantrecipe.g()) {
