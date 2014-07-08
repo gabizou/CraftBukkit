@@ -24,9 +24,13 @@ import net.minecraft.server.EntityLiving;
 import net.minecraft.server.EntityPlayer;
 import net.minecraft.server.EntityPotion;
 import net.minecraft.server.Explosion;
+import net.minecraft.server.IInventory;
+import net.minecraft.server.IMerchant;
 import net.minecraft.server.InventoryCrafting;
 import net.minecraft.server.ItemStack;
 import net.minecraft.server.Items;
+import net.minecraft.server.MerchantRecipe;
+import net.minecraft.server.MerchantRecipeList;
 import net.minecraft.server.PacketPlayInCloseWindow;
 import net.minecraft.server.PacketPlayOutSetSlot;
 import net.minecraft.server.Slot;
@@ -50,6 +54,7 @@ import org.bukkit.craftbukkit.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.inventory.CraftInventoryCrafting;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.inventory.CraftTradeOffer;
 import org.bukkit.craftbukkit.util.CraftDamageSource;
 import org.bukkit.craftbukkit.util.CraftMagicNumbers;
 import org.bukkit.entity.Arrow;
@@ -75,10 +80,12 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.event.merchant.MerchantAddOfferEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.TradeOffer;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -890,4 +897,13 @@ public class CraftEventFactory {
         entityHuman.world.getServer().getPluginManager().callEvent(event);
         return (Cancellable) event;
     }
+
+    public static void handleMerchantAddOfferEvent(IMerchant merchant, MerchantRecipe toAdd) {
+        MerchantAddOfferEvent event = new MerchantAddOfferEvent(merchant.getBukkitMerchant(), toAdd.getBukkitTrade());
+        Bukkit.getServer().getPluginManager().callEvent(event);
+        if (!event.isCancelled()) {
+            merchant.getOffers(merchant.b()).a(toAdd); // Should be offer(MerchantRecipe)
+        }
+    }
+
 }

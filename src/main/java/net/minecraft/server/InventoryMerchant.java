@@ -8,9 +8,9 @@ import org.bukkit.entity.HumanEntity;
 
 public class InventoryMerchant implements IInventory {
 
-    private final IMerchant merchant;
+    public final IMerchant merchant; // CraftBukkit - private -> public
     private ItemStack[] itemsInSlots = new ItemStack[3];
-    private final EntityHuman player;
+    public final EntityHuman player; // CraftBukkit - private -> public
     private MerchantRecipe recipe;
     private int e;
 

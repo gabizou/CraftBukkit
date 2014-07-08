@@ -6,10 +6,12 @@ import static org.hamcrest.Matchers.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.TradeOffer;
 import org.bukkit.support.AbstractTestingBase;
 import org.junit.Test;
 
@@ -56,6 +58,60 @@ public class CompositeSerialization extends AbstractTestingBase {
         for (int i = 0; i < 9; i++) {
             assertThat(String.valueOf(i), (Object) stacks.get(i), is((Object) raw.get(i)));
         }
+    }
+
+    @Test
+    public void testSaveRestoreCompositeTradeOffers() throws InvalidConfigurationException {
+        YamlConfiguration out = getConfig();
+
+        List<TradeOffer> offers = new ArrayList<TradeOffer>();
+        offers.add(TradeOffer.builder()
+                .withFirstItem(new ItemStack(Material.EMERALD, 1))
+                .withResultingItem(new ItemStack(Material.DIAMOND, 1))
+                .build());
+        offers.add(TradeOffer.builder()
+                .withFirstItem(new ItemStack(Material.EMERALD, 2))
+                .withResultingItem(new ItemStack(Material.DIAMOND, 2))
+                .build());
+        offers.add(TradeOffer.builder()
+                .withFirstItem(new ItemStack(Material.EMERALD, 3))
+                .withResultingItem(new ItemStack(Material.DIAMOND, 3))
+                .build());
+        offers.add(TradeOffer.builder()
+                .withFirstItem(new ItemStack(Material.EMERALD, 1))
+                .withSecondItem(new ItemStack(Material.EMERALD, 1))
+                .withResultingItem(new ItemStack(Material.DIAMOND, 1))
+                .build());
+        offers.add(TradeOffer.builder()
+                .withFirstItem(new ItemStack(Material.EMERALD, 1))
+                .withSecondItem(new ItemStack(Material.EMERALD, 2))
+                .withResultingItem(new ItemStack(Material.DIAMOND, 2))
+                .build());
+        offers.add(TradeOffer.builder()
+                .withFirstItem(new ItemStack(Material.EMERALD, 1))
+                .withResultingItem(new ItemStack(Material.DIAMOND, 1))
+                .withMaxUses(5)
+                .withSetUses(3)
+                .build());
+        offers.add(TradeOffer.builder()
+                .withFirstItem(new ItemStack(Material.EMERALD, 1))
+                .withResultingItem(new ItemStack(Material.DIAMOND, 1))
+                .withMaxUses(10)
+                .withSetUses(7)
+                .build());
+        out.set("tradeoffers-list.abc.def", offers);
+        String yaml = out.saveToString();
+
+        YamlConfiguration in = new YamlConfiguration();
+        in.loadFromString(yaml);
+        List<?> raw = in.getList("tradeoffers-list.abc.def");
+
+        assertThat(offers, hasSize(raw.size()));
+
+        for (int i = 0; i < 6; i++) {
+            assertThat(String.valueOf(i), (Object) offers.get(i), is((Object) raw.get(i)));
+        }
+
     }
 }
 

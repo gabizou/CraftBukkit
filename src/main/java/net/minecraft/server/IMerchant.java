@@ -11,4 +11,6 @@ public interface IMerchant {
     void a(MerchantRecipe merchantrecipe);
 
     void a_(ItemStack itemstack);
+
+    public org.bukkit.merchant.Merchant getBukkitMerchant(); // CraftBukkit
 }

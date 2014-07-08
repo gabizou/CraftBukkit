@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 
+import org.bukkit.merchant.Merchant;
+
 public class EntityVillager extends EntityAgeable implements IMerchant, NPC {
 
     private int profession;
@@ -413,7 +415,8 @@ public class EntityVillager extends EntityAgeable implements IMerchant, NPC {
         }
 
         for (int i1 = 0; i1 < i && i1 < merchantrecipelist.size(); ++i1) {
-            this.bu.a((MerchantRecipe) merchantrecipelist.get(i1));
+            // CraftBukkit - handle adding the MerchantRecipe with events - this.bu should be this.recipeList
+            org.bukkit.craftbukkit.event.CraftEventFactory.handleMerchantAddOfferEvent(this, (MerchantRecipe) merchantrecipelist.get(i1));
         }
     }
 
@@ -548,4 +551,11 @@ public class EntityVillager extends EntityAgeable implements IMerchant, NPC {
         bC.put(Items.EYE_OF_ENDER, new Tuple(Integer.valueOf(7), Integer.valueOf(11)));
         bC.put(Items.ARROW, new Tuple(Integer.valueOf(-12), Integer.valueOf(-8)));
     }
+
+    // CraftBukkit start
+    @Override
+    public Merchant getBukkitMerchant() {
+        return (org.bukkit.entity.Villager) this.getBukkitEntity();
+    }
+    // CraftBukkit end
 }

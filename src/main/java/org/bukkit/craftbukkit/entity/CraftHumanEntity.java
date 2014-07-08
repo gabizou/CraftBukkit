@@ -1,11 +1,16 @@
 package org.bukkit.craftbukkit.entity;
 
+import java.util.Collection;
 import java.util.Set;
+
+import org.apache.commons.lang.Validate;
 
 import net.minecraft.server.Container;
 import net.minecraft.server.EntityHuman;
 import net.minecraft.server.EntityMinecartHopper;
 import net.minecraft.server.EntityPlayer;
+import net.minecraft.server.IMerchant;
+import net.minecraft.server.MerchantRecipeList;
 import net.minecraft.server.PacketPlayInCloseWindow;
 import net.minecraft.server.PacketPlayOutOpenWindow;
 import net.minecraft.server.TileEntityBrewingStand;
@@ -16,6 +21,7 @@ import net.minecraft.server.TileEntityHopper;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
@@ -26,11 +32,17 @@ import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.event.CraftEventFactory;
 import org.bukkit.craftbukkit.inventory.CraftContainer;
 import org.bukkit.craftbukkit.inventory.CraftInventory;
+import org.bukkit.craftbukkit.inventory.CraftInventoryMerchant;
 import org.bukkit.craftbukkit.inventory.CraftInventoryPlayer;
 import org.bukkit.craftbukkit.inventory.CraftInventoryView;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.inventory.CraftTradeOffer;
+import org.bukkit.craftbukkit.merchant.CraftDummyMerchant;
+
 import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.TradeOffer;
+import org.bukkit.merchant.Merchant;
 import org.bukkit.permissions.PermissibleBase;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
@@ -285,6 +297,31 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
         if (force) {
             getHandle().activeContainer.checkReachable = false;
         }
+        return getHandle().activeContainer.getBukkitView();
+    }
+
+    @Override
+    public InventoryView openTrade(Merchant merchant, boolean force) {
+        Validate.notNull(merchant, "Cannot open a trade with a null merchant!");
+        Validate.isTrue(merchant instanceof CraftVillager, "Merchant is not a Villager!");
+        CraftVillager villager = (CraftVillager) merchant;
+        getHandle().openTrade(villager.getHandle(), villager.getCustomName());
+        if (force) {
+            getHandle().activeContainer.checkReachable = false;
+        }
+        return getHandle().activeContainer.getBukkitView();
+    }
+
+    @Override
+    public InventoryView openTrade(Collection<TradeOffer> offers, String customName) {
+        Validate.notNull(offers, "Cannot open a trade with null offers!");
+        MerchantRecipeList list = new MerchantRecipeList();
+        for (TradeOffer offer : offers) {
+            list.add(CraftTradeOffer.asNMSCopy(offer));
+        }
+        CraftDummyMerchant merchant = new CraftDummyMerchant(list, getHandle());
+        getHandle().openTrade(merchant, (customName == null ? "": customName));
+        getHandle().activeContainer.checkReachable = false;
         return getHandle().activeContainer.getBukkitView();
     }
 

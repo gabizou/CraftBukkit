@@ -1,12 +1,23 @@
 package net.minecraft.server;
 
+// CraftBukkit start
+import org.bukkit.craftbukkit.inventory.CraftTradeOffer;
+import org.bukkit.inventory.TradeOffer;
+// CraftBukkit end
+
 public class MerchantRecipe {
 
     private ItemStack buyingItem1;
     private ItemStack buyingItem2;
     private ItemStack sellingItem;
-    private int uses;
-    private int maxUses;
+    // CraftBukkit start
+    public int uses; // private -> public
+    public int maxUses; // private -> public
+
+    public TradeOffer getBukkitTrade() {
+        return CraftTradeOffer.asBukkitCopy(this);
+    }
+    // CraftBukkit end
 
     public MerchantRecipe(NBTTagCompound nbttagcompound) {
         this.a(nbttagcompound);
