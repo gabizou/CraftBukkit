@@ -415,7 +415,7 @@ public class EntityVillager extends EntityAgeable implements IMerchant, NPC {
         }
 
         for (int i1 = 0; i1 < i && i1 < merchantrecipelist.size(); ++i1) {
-            // CraftBukkit - handle adding the MerchantRecipe with events - this.bu should be this.recipeList
+            // CraftBukkit - handle adding the MerchantRecipe with events
             org.bukkit.craftbukkit.event.CraftEventFactory.handleMerchantAddOfferEvent(this, (MerchantRecipe) merchantrecipelist.get(i1));
         }
     }
