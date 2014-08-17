@@ -6,7 +6,6 @@ import net.minecraft.server.NBTTagCompound;
 import org.bukkit.inventory.TradeOffer;
 
 public class CraftTradeOffer {
-
     public static MerchantRecipe asNMSCopy(TradeOffer original) {
         if (original == null) {
             return null;

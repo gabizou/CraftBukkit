@@ -6,7 +6,6 @@ import net.minecraft.server.InventoryMerchant;
 import org.apache.commons.lang.Validate;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.inventory.CraftInventoryMerchant;
-
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
 import org.bukkit.inventory.MerchantInventory;

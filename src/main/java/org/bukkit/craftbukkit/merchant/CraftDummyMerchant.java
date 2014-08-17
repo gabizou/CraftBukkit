@@ -8,7 +8,6 @@ import net.minecraft.server.MerchantRecipe;
 import net.minecraft.server.MerchantRecipeList;
 
 import org.bukkit.craftbukkit.inventory.CraftInventoryMerchant;
-
 import org.bukkit.Sound;
 import org.bukkit.inventory.MerchantInventory;
 import org.bukkit.merchant.Merchant;
@@ -57,7 +56,6 @@ public class CraftDummyMerchant implements Merchant, IMerchant {
 
     @Override
     public void a_(ItemStack itemstack) {
-
     }
 
     @Override

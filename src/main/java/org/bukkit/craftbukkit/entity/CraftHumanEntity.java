@@ -3,7 +3,6 @@ package org.bukkit.craftbukkit.entity;
 import java.util.Collection;
 import java.util.Set;
 
-import org.apache.commons.lang.Validate;
 
 import net.minecraft.server.Container;
 import net.minecraft.server.EntityHuman;
@@ -18,6 +17,7 @@ import net.minecraft.server.TileEntityDispenser;
 import net.minecraft.server.TileEntityFurnace;
 import net.minecraft.server.TileEntityHopper;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -39,7 +39,6 @@ import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.inventory.CraftTradeOffer;
 import org.bukkit.craftbukkit.merchant.CraftDummyMerchant;
-
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.TradeOffer;
 import org.bukkit.merchant.Merchant;

@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
 
 import org.junit.Test;
-
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.TradeOffer;

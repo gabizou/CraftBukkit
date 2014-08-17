@@ -2,10 +2,7 @@ package org.bukkit.craftbukkit.inventory;
 
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
 import net.minecraft.util.io.netty.buffer.Unpooled;
-import org.apache.commons.lang.Validate;
-
 import net.minecraft.server.EntityPlayer;
 import net.minecraft.server.IMerchant;
 import net.minecraft.server.InventoryMerchant;
@@ -14,13 +11,15 @@ import net.minecraft.server.MerchantRecipeList;
 import net.minecraft.server.PacketDataSerializer;
 import net.minecraft.server.PacketPlayOutCustomPayload;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.merchant.Merchant;
 import org.bukkit.inventory.MerchantInventory;
 import org.bukkit.inventory.TradeOffer;
 
-public class CraftInventoryMerchant extends CraftInventory implements MerchantInventory {
+import com.google.common.collect.ImmutableList;
 
+public class CraftInventoryMerchant extends CraftInventory implements MerchantInventory {
     private IMerchant merchant;
     private MerchantRecipeList list;
 

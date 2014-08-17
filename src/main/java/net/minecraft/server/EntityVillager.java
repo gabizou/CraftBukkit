@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 
-import org.bukkit.merchant.Merchant;
+import org.bukkit.merchant.Merchant; // CraftBukkit
 
 public class EntityVillager extends EntityAgeable implements IMerchant, NPC {
 
